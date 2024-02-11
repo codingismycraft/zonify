@@ -9,7 +9,6 @@ import folium
 from geopy.geocoders import Nominatim
 from shapely.geometry import Point
 
-
 _HOME_DIR = pathlib.Path.home()
 _GEO_DB = os.path.join(_HOME_DIR, "resources", "polygons.gpkg")
 
@@ -17,10 +16,9 @@ _GEO_DB = os.path.join(_HOME_DIR, "resources", "polygons.gpkg")
 def make_map(post_code):
     global _polygons
     if not _polygons:
-        _polygons = _Polygons(10)
+        _polygons = _Polygons()
 
     return _polygons.plot_polygon_for_postcode(post_code)
-
 
 
 class _Polygons:
@@ -32,7 +30,6 @@ class _Polygons:
         else:
             gdf = gpd.read_file(_GEO_DB, rows=rows)
         self.__gdf = gdf.to_crs(epsg=4326)
-
 
     def get_containing_polygon(self, post_code):
         """Find the containing polygon for the passed in post_code.
@@ -83,6 +80,7 @@ class _Polygons:
         if location:
             return Point(location.longitude, location.latitude)
         raise ValueError
+
 
 _polygons = None
 
