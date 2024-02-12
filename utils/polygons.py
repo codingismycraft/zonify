@@ -16,12 +16,14 @@ def make_map(post_code):
     :param str post_code: The post code to lookup.
 
     :return: The HTML to display as a string.
+
+    :raises: ValueError is the post code is not found.
     """
     global _polygons
     if not _polygons:
         _polygons = _Polygons()
 
-    return _polygons._plot_polygon_for_postcode(post_code)
+    return _polygons.plot_polygon_for_postcode(post_code)
 
 
 ###############################################################################
@@ -39,7 +41,11 @@ class _Polygons:
     """Keeps the multi-polygons database in memory."""
 
     def __init__(self, rows=None):
-        """Initializer."""
+        """Initializer.
+
+        :param int rows: number of rows to load in the database (if None
+        then the full database will be loaded).
+        """
         if rows is None:
             gdf = gpd.read_file(_GEO_DB)
         else:
@@ -57,13 +63,13 @@ class _Polygons:
         :raises: ValueError is the post code is not found.
         """
         point = self._make_point_from_postcode(post_code)
-        for index, row in self.__gdf.iterrows():
+        for _, row in self.__gdf.iterrows():
             polygon = row['geometry']
             if polygon.contains(point):
                 return polygon
         raise ValueError
 
-    def _plot_polygon_for_postcode(self, post_code, fill_color=None):
+    def plot_polygon_for_postcode(self, post_code, fill_color=None):
         """For the passed in post_code returns the HTML for the polygon.
 
         :param str post_code: The post code to lookup.
@@ -71,6 +77,8 @@ class _Polygons:
         :param str fill_color: The color to use to fill the area (optional).
 
         :returns: The HTML document for the containing polygon.
+
+        :raises: ValueError is the post code is not found.
         """
         fill_color = fill_color or 'green'
         p = self._get_containing_polygon(post_code)
