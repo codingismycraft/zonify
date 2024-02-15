@@ -14,6 +14,12 @@ def get_polygon(post_code):
     return polygons.make_map(post_code)
 
 
+@app.route("/ageratings/<minage>/<maxage>")
+def get_ageratings(minage, maxage):
+    """Returns the enclosing polygon for the passed in post code."""
+    return polygons.get_ratings_per_area_code(minage, maxage)
+
+
 if __name__ == '__main__':
     print(f"Starting the zomify server in port: {constants.PORT}")
     app.run(host="0.0.0.0", port=constants.PORT, debug=True)

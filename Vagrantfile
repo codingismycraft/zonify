@@ -3,6 +3,7 @@ sudo apt update
 sudo apt install python3-pip -y
 sudo apt-get install libpq-dev python3-dev -y
 sudo apt install python3-tk -y gnome-terminal
+sudo apt-get install libsqlite3-dev
 SCRIPT
 
 Vagrant.configure("2") do |config|
